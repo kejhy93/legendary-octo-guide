@@ -14,6 +14,19 @@ body {
     overflow: auto; /* Allow scrolling if content overflows viewport */
 }
 
+#content-container {
+    width: 90%;
+    max-width: 900px;
+}
+
+.page {
+    background-color: #2b2b2b;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 6px 6px rgba(0,0,0,0.3);
+    padding: 40px;
+    box-sizing: border-box;
+}
+
 /* --- Slides Container Styling --- */
 #slides-container {
     width: 90%; /* Slides container takes 90% of available width */
@@ -110,6 +123,15 @@ code {
     transform: translateX(-50%); /* Adjust to truly center horizontally */
     z-index: 100; /* Ensure buttons are above other content */
 }
+
+.view-navigation {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
 
 button {
     background-color: #008000; /* Green background for navigation buttons */

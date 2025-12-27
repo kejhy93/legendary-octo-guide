@@ -4,49 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Git Cheatsheet</title>
+    <!-- Link to the main stylesheet for custom styles -->
     <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css"> <!-- Prism.js dark theme -->
+    <!-- Link to Prism.js stylesheet for code block syntax highlighting (Okaidia theme) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
+    <!-- Link to marked.js library for converting Markdown to HTML -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
-    <div id="slides-container"></div>
+    <!-- Container for buttons to switch between slideshow and page views -->
+    <div class="view-navigation">
+        <button id="slideshow-button">Slideshow</button>
+        <button id="page-button">Page</button>
+    </div>
 
+    <!-- Main container where Markdown content (slides or page) will be rendered -->
+    <div id="content-container"></div>
+
+    <!-- Navigation buttons for the slideshow view -->
     <div class="navigation">
         <button id="prev" disabled aria-label="Previous slide">&larr;</button>
         <button id="next" aria-label="Next slide">&rarr;</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script> <!-- Prism.js core -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script> <!-- Prism.js autoloader for language detection -->
+    <!-- Link to Prism.js core library for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <!-- Link to Prism.js autoloader plugin for automatic language detection in code blocks -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
     <script>
         // Ensure the DOM is fully loaded before executing JavaScript
         document.addEventListener('DOMContentLoaded', () => {
             // Get references to key DOM elements
-            const slidesContainer = document.getElementById('slides-container');
+            const contentContainer = document.getElementById('content-container');
             const prevButton = document.getElementById('prev');
             const nextButton = document.getElementById('next');
+            const slideshowButton = document.getElementById('slideshow-button');
+            const pageButton = document.getElementById('page-button');
+            // Reference to the container for slideshow navigation buttons
+            const navigationButtons = document.querySelector('.navigation');
 
             // Initialize variables for slide management
-            let slides = []; // Array to hold all slide elements
+            let slides = []; // Array to hold all slide elements (DOM nodes)
             let currentSlide = 0; // Index of the currently displayed slide
 
-            // Function to display a specific slide and manage navigation button states
+            /**
+             * Displays a specific slide and manages the state of navigation buttons.
+             * @param {number} index - The index of the slide to display.
+             */
             function showSlide(index) {
-                // Hide all slides first
+                // Remove 'current' class from all slides to hide them
                 slides.forEach((slide, i) => {
                     slide.classList.remove('current');
-                    // Display the slide at the given index
+                    // Add 'current' class to the target slide to display it
                     if (i === index) {
                         slide.classList.add('current');
                     }
                 });
-                // Disable/enable navigation buttons based on current slide position
-                prevButton.disabled = index === 0; // Disable 'Previous' if on the first slide
-                nextButton.disabled = index === slides.length - 1; // Disable 'Next' if on the last slide
+                // Disable 'Previous' button if on the first slide
+                prevButton.disabled = index === 0;
+                // Disable 'Next' button if on the last slide
+                nextButton.disabled = index === slides.length - 1;
             }
 
-            // --- Slide Navigation Functions ---
+            /**
+             * Advances to the next slide in the slideshow.
+             */
             function nextSlide() {
                 if (currentSlide < slides.length - 1) {
                     currentSlide++;
@@ -54,95 +78,135 @@
                 }
             }
 
+            /**
+             * Goes back to the previous slide in the slideshow.
+             */
             function prevSlide() {
                 if (currentSlide > 0) {
                     currentSlide--;
                     showSlide(currentSlide);
                 }
             }
-
+            
+            /**
+             * Resets the slideshow to the first slide.
+             */
             function goToStart() {
                 currentSlide = 0;
                 showSlide(currentSlide);
             }
 
-            // Function to set up event listeners for navigation buttons
-            function setupNavigation() {
+            /**
+             * Sets up event listeners for slideshow navigation (buttons and keyboard).
+             */
+            function setupSlideshowNavigation() {
+                // Event listeners for 'Next' and 'Previous' buttons
                 nextButton.addEventListener('click', nextSlide);
                 prevButton.addEventListener('click', prevSlide);
-            }
 
-            // Function to set up keyboard event listeners for navigation
-            function setupKeyboardNavigation() {
+                // Keyboard navigation for slides
                 document.addEventListener('keydown', (event) => {
                     switch (event.key) {
-                        case 'ArrowRight':
+                        case 'ArrowRight': // Right arrow key for next slide
                             nextSlide();
                             break;
-                        case 'ArrowLeft':
+                        case 'ArrowLeft':  // Left arrow key for previous slide
                             prevSlide();
                             break;
-                        case 'Home':
-                        case 'R':
+                        case 'Home':     // Home key to go to the first slide
+                        case 'R':        // 'R' key to go to the first slide
                         case 'r':
                             goToStart();
                             break;
                         default:
-                            return;
+                            return; // Do nothing for other keys
                     }
-                    event.preventDefault();
+                    event.preventDefault(); // Prevent default browser actions for handled keys
                 });
             }
 
-            // Fetch the Markdown content for the slides
-            fetch('slide.md')
-                .then(response => {
-                    // Check if the HTTP response was successful (status 200-299)
-                    if (!response.ok) {
-                        // If not, throw an error to be caught by the .catch block
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    // Parse the response as plain text
-                    return response.text();
-                })
-                .then(text => {
-                    // Split the Markdown text into individual slide contents using a specific delimiter (newline followed by '---' followed by newline)
-                    const slideContents = text.split(/\n---\n/);
-                    slideContents.forEach((content, index) => {
-                        // Create a new div element for each slide
-                        const slide = document.createElement('div');
-                        slide.className = 'slide'; // Assign the 'slide' class for styling
-
-                        // Parse Markdown content to HTML using marked.js
-                        const parsedContent = marked.parse(content);
-                        console.log('Parsed content for slide:', parsedContent); // Debugging log: shows the HTML output after Markdown parsing
-                        slide.innerHTML = parsedContent; // Inject the parsed HTML into the slide div
-                        slidesContainer.appendChild(slide); // Add the slide to the container
+            /**
+             * Loads and displays the slideshow content from 'slide.md'.
+             * Hides the slideshow navigation buttons.
+             */
+            function loadSlideshow() {
+                // Show navigation buttons for slideshow
+                navigationButtons.style.display = 'block';
+                fetch('slide.md')
+                    .then(response => {
+                        // Check if the HTTP response was successful (status 200-299)
+                        if (!response.ok) {
+                            // If not, throw an error to be caught by the .catch block
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        // Parse the response as plain text
+                        return response.text();
+                    })
+                    .then(text => {
+                        // Clear previous content
+                        contentContainer.innerHTML = '';
+                        // Split the Markdown text into individual slide contents using '---' as a delimiter
+                        const slideContents = text.split(/\n---\n/);
+                        slideContents.forEach(content => {
+                            const slide = document.createElement('div');
+                            slide.className = 'slide'; // Assign 'slide' class for styling
+                            // Convert Markdown content to HTML and inject into the slide div
+                            slide.innerHTML = marked.parse(content);
+                            contentContainer.appendChild(slide); // Add slide to the container
+                        });
+                        // Update the 'slides' NodeList and display the first slide
+                        slides = document.querySelectorAll('.slide');
+                        if (slides.length > 0) {
+                            showSlide(0);
+                        }
+                        // Highlight code blocks using Prism.js after content is loaded
+                        Prism.highlightAll();
+                    })
+                    .catch(e => {
+                        console.error('Error fetching or parsing slide.md:', e);
+                        // Display an error message if content loading fails
+                        contentContainer.innerHTML = `<div class="slide current"><h2>Error</h2><p>Could not load presentation content.</p></div>`;
                     });
+            }
 
-                    // After all slides are created, get a live NodeList of them
-                    slides = document.querySelectorAll('.slide');
-                    // Display the first slide if any slides were loaded
-                    if (slides.length > 0) {
-                        showSlide(0);
-                    }
-                    // Set up all navigation methods after slides are loaded
-                    setupNavigation();
-                    setupKeyboardNavigation();
-                    // Manually highlight code blocks after dynamic content is added
-                    Prism.highlightAll();
-                })
-                .catch(e => {
-                    // Catch any errors during fetching or parsing
-                    console.error('Error fetching or parsing slide.md:', e);
-                    // Display a user-friendly error message on the page
-                    slidesContainer.innerHTML = `
-                        <div class="slide current">
-                            <h2>Error</h2>
-                            <p>Could not load presentation content. Please check the console for details.</p>
-                        </div>
-                    `;
-                });
+            /**
+             * Loads and displays the full page content from 'page.md'.
+             * Hides the slideshow navigation buttons.
+             */
+            function loadPage() {
+                // Hide navigation buttons for page view
+                navigationButtons.style.display = 'none';
+                fetch('page.md')
+                    .then(response => {
+                        // Check if the HTTP response was successful (status 200-299)
+                        if (!response.ok) {
+                            // If not, throw an error to be caught by the .catch block
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        // Parse the response as plain text
+                        return response.text();
+                    })
+                    .then(text => {
+                        // Clear previous content and display the full page content
+                        contentContainer.innerHTML = `<div class="page">${marked.parse(text)}</div>`;
+                        // Highlight code blocks using Prism.js after content is loaded
+                        Prism.highlightAll();
+                    })
+                    .catch(e => {
+                        console.error('Error fetching or parsing page.md:', e);
+                        // Display an error message if content loading fails
+                        contentContainer.innerHTML = `<div class="page"><h2>Error</h2><p>Could not load page content.</p></div>`;
+                    });
+            }
+
+            // Event listeners for view selection buttons
+            slideshowButton.addEventListener('click', loadSlideshow);
+            pageButton.addEventListener('click', loadPage);
+
+            // Initial load: Display the slideshow by default when the page loads
+            loadSlideshow();
+            // Set up slideshow navigation
+            setupSlideshowNavigation();
         });
     </script>
 </body>
