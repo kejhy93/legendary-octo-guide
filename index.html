@@ -216,6 +216,23 @@
             }
 
             /**
+             * Fetches a markdown file and returns its contents as text.
+             * Centralizes HTTP status checking so all markdown views share the same behavior.
+             *
+             * @param {string} path - The path to the markdown file.
+             * @returns {Promise<string>} - Resolves with the markdown content.
+             */
+            function fetchMarkdown(path) {
+                return fetch(path).then((response) => {
+                    // Check if the HTTP response was successful (status 200-299)
+                    if (!response.ok) {
+                        throw new Error(`Failed to load "${path}" (status ${response.status})`);
+                    }
+                    return response.text();
+                });
+            }
+
+            /**
              * Loads and displays the slideshow content from 'slide.md'.
              * Shows the slideshow navigation buttons.
              */
@@ -223,7 +240,7 @@
                 const intendedView = 'slideshow';
                 setViewMode(intendedView);
                 // Show navigation buttons for slideshow
-                navigationButtons.classList.remove('hidden');
+                navigationButtons.style.display = 'block';
                 fetchMarkdown('slide.md')
                     .then(text => {
                         if (currentView !== intendedView) return; // Abort if view has changed
@@ -262,6 +279,8 @@
                 setViewMode(intendedView);
                 // Hide navigation buttons for page view
                 navigationButtons.classList.add('hidden');
+                fetchMarkdown('page.md')
+                navigationButtons.style.display = 'none';
                 fetchMarkdown('page.md')
                     .then(text => {
                         if (currentView !== intendedView) return; // Abort if view has changed
