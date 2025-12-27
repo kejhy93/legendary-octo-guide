@@ -189,8 +189,8 @@
                             slide.innerHTML = marked.parse(content);
                             contentContainer.appendChild(slide); // Add slide to the container
                         });
-                        // Update the 'slides' NodeList and display the first slide
-                        slides = document.querySelectorAll('.slide');
+                        // Update the 'slides' NodeList and display the first slide (scoped to the content container)
+                        slides = contentContainer.querySelectorAll('.slide');
                         currentSlide = 0;
                         if (slides.length > 0) {
                             showSlide(0);
