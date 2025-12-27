@@ -126,22 +126,30 @@
             }
 
             /**
+             * Fetches a markdown file and returns its contents as text.
+             * Centralizes HTTP status checking so all markdown views share the same behavior.
+             *
+             * @param {string} path - The path to the markdown file.
+             * @returns {Promise<string>} - Resolves with the markdown content.
+             */
+            function fetchMarkdown(path) {
+                return fetch(path).then((response) => {
+                    // Check if the HTTP response was successful (status 200-299)
+                    if (!response.ok) {
+                        throw new Error(`Failed to load "${path}" (status ${response.status})`);
+                    }
+                    return response.text();
+                });
+            }
+
+            /**
              * Loads and displays the slideshow content from 'slide.md'.
-             * Hides the slideshow navigation buttons.
+             * Shows the slideshow navigation buttons.
              */
             function loadSlideshow() {
                 // Show navigation buttons for slideshow
                 navigationButtons.style.display = 'block';
-                fetch('slide.md')
-                    .then(response => {
-                        // Check if the HTTP response was successful (status 200-299)
-                        if (!response.ok) {
-                            // If not, throw an error to be caught by the .catch block
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        // Parse the response as plain text
-                        return response.text();
-                    })
+                fetchMarkdown('slide.md')
                     .then(text => {
                         // Clear previous content
                         contentContainer.innerHTML = '';
@@ -176,16 +184,7 @@
             function loadPage() {
                 // Hide navigation buttons for page view
                 navigationButtons.style.display = 'none';
-                fetch('page.md')
-                    .then(response => {
-                        // Check if the HTTP response was successful (status 200-299)
-                        if (!response.ok) {
-                            // If not, throw an error to be caught by the .catch block
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        // Parse the response as plain text
-                        return response.text();
-                    })
+                fetchMarkdown('page.md')
                     .then(text => {
                         // Clear previous content and display the full page content
                         contentContainer.innerHTML = `<div class="page">${marked.parse(text)}</div>`;

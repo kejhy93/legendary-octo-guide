@@ -27,12 +27,6 @@ body {
     box-sizing: border-box;
 }
 
-/* --- Slides Container Styling --- */
-#slides-container {
-    width: 90%; /* Slides container takes 90% of available width */
-    max-width: 900px; /* Limit maximum width for better readability on large screens */
-}
-
 /* --- Individual Slide Styling --- */
 .slide {
     background-color: #2b2b2b; /* Slightly lighter dark background for individual slides */
