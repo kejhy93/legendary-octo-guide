@@ -174,7 +174,7 @@
                 const intendedView = 'slideshow';
                 setViewMode(intendedView);
                 // Show navigation buttons for slideshow
-                navigationButtons.style.display = 'block';
+                navigationButtons.classList.remove('hidden');
                 fetchMarkdown('slide.md')
                     .then(text => {
                         if (currentView !== intendedView) return; // Abort if view has changed
@@ -218,7 +218,7 @@
                 const intendedView = 'page';
                 setViewMode(intendedView);
                 // Hide navigation buttons for page view
-                navigationButtons.style.display = 'none';
+                navigationButtons.classList.add('hidden');
                 fetchMarkdown('page.md')
                     .then(text => {
                         if (currentView !== intendedView) return; // Abort if view has changed
