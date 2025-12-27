@@ -6,15 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Git Cheatsheet</title>
     <!-- Link to the main stylesheet for custom styles -->
-    <!-- Link to the main stylesheet for custom styles -->
     <link rel="stylesheet" href="./style.css">
-    <!-- Link to Prism.js stylesheet for code block syntax highlighting (Okaidia theme) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
     <!-- Link to marked.js library for converting Markdown to HTML -->
     <!-- Link to Prism.js stylesheet for code block syntax highlighting (Okaidia theme) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
     <!-- Link to marked.js library for converting Markdown to HTML -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Link to DOMPurify library for sanitizing HTML content -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 </head>
 
 <body>
@@ -25,28 +24,6 @@
             Slideshow
         </button>
         <button id="page-button" class="view-toggle" aria-pressed="false">
-            Page
-        </button>
-    </div>
-
-    <!-- Main container where Markdown content (slides or page) will be rendered -->
-    <div id="content-container"></div>
-
-    <!-- Navigation buttons for the slideshow view -->
-    <!-- Container for buttons to switch between slideshow and page views -->
-    <div class="view-navigation" role="group" aria-label="View mode">
-        <button
-            id="slideshow-button"
-            class="view-toggle active"
-            aria-pressed="true"
-        >
-            Slideshow
-        </button>
-        <button
-            id="page-button"
-            class="view-toggle"
-            aria-pressed="false"
-        >
             Page
         </button>
     </div>
@@ -79,8 +56,9 @@
             let slides = [];
             let currentSlide = 0;
             let currentView = 'slideshow'; // 'slideshow' or 'page'
-            const slideshowButton = document.getElementById('slideshow-button');
-            const pageButton = document.getElementById('page-button');
+            const slideCounterEl = document.getElementById('slide-counter');
+            const shortcutsInfoEl = document.getElementById('shortcuts-info');
+            let shortcutsVisible = true;
 
             /**
              * Displays a specific slide and manages the state of navigation buttons.
@@ -99,6 +77,8 @@
                 prevButton.disabled = index === 0;
                 // Disable 'Next' button if on the last slide
                 nextButton.disabled = index === slides.length - 1;
+                // Update slide counter
+                slideCounterEl.textContent = `Slide ${index + 1}/${slides.length}`;
             }
 
             /**
@@ -123,10 +103,6 @@
                     showSlide(currentSlide);
                 }
             }
-
-            /**
-             * Resets the slideshow to the first slide.
-             */
 
             /**
              * Resets the slideshow to the first slide.
@@ -164,6 +140,10 @@
                         case 'r':
                             goToStart();
                             break;
+                        case 'Escape':   // ESC key to toggle shortcuts display
+                            shortcutsVisible = !shortcutsVisible;
+                            shortcutsInfoEl.classList.toggle('active', shortcutsVisible);
+                            break;
                         default:
                             return; // Do nothing for other keys
                             return; // Do nothing for other keys
@@ -198,6 +178,10 @@
 
                 slideshowButton.classList.toggle('active', isSlideshow);
                 pageButton.classList.toggle('active', !isSlideshow);
+
+                // Show/hide slide counter and shortcuts based on view mode
+                slideCounterEl.classList.toggle('active', isSlideshow);
+                shortcutsInfoEl.classList.toggle('active', isSlideshow && shortcutsVisible);
             }
 
 
@@ -206,16 +190,32 @@
             }
 
 
+
             function renderError(view, message, error) {
                 if (error) {
                     console.error(message, error);
                 } else {
                     console.error(message);
                 }
-                const errorHtml = view === 'slideshow'
-                    ? `<div class="slide current"><h2>Error</h2><p>${message}</p></div>`
-                    : `<div class="page"><h2>Error</h2><p>${message}</p></div>`;
-                contentContainer.innerHTML = errorHtml;
+
+                // Clear existing content
+                contentContainer.innerHTML = '';
+
+                // Create wrapper depending on view type
+                const wrapper = document.createElement('div');
+                wrapper.className = view === 'slideshow' ? 'slide current' : 'page';
+
+                const heading = document.createElement('h2');
+                heading.textContent = 'Error';
+
+                const paragraph = document.createElement('p');
+                // Use textContent to avoid executing any markup in message
+                paragraph.textContent = message;
+
+                wrapper.appendChild(heading);
+                wrapper.appendChild(paragraph);
+                contentContainer.appendChild(wrapper);
+
                 if (view === 'slideshow') {
                     slides = [];
                     currentSlide = 0;
@@ -223,6 +223,7 @@
                     nextButton.disabled = true;
                 }
             }
+
 
             /**
              * Loads and displays the slideshow content from 'slide.md'.
@@ -244,8 +245,9 @@
                         slideContents.forEach(content => {
                             const slide = document.createElement('div');
                             slide.className = 'slide'; // Assign 'slide' class for styling
-                            // Convert Markdown content to HTML and inject into the slide div
-                            slide.innerHTML = marked.parse(content);
+                            // Convert Markdown content to HTML and sanitize with DOMPurify to prevent XSS
+                            const sanitized = DOMPurify.sanitize(marked.parse(content));
+                            slide.innerHTML = sanitized;
                             contentContainer.appendChild(slide); // Add slide to the container
                         });
                         // Update the 'slides' NodeList and display the first slide (scoped to the content container)
@@ -259,13 +261,7 @@
                     })
                     .catch(e => {
                         if (currentView !== intendedView) return; // Abort if view has changed
-                        console.error('Error fetching or parsing slide.md:', e);
-                        // Display an error message if content loading fails
-                        contentContainer.innerHTML = `<div class="current"><h2>Error</h2><p>Could not load presentation content.</p></div>`;
-                        slides = [];
-                        currentSlide = 0;
-                        prevButton.disabled = true;
-                        nextButton.disabled = true;
+                        renderError('slideshow', 'Could not load presentation content.', e);
                     });
             }
 
@@ -281,19 +277,17 @@
                 fetchMarkdown('page.md')
                     .then(text => {
                         if (currentView !== intendedView) return; // Abort if view has changed
-                        // Clear previous content and display the full page content
-                        contentContainer.innerHTML = `<div class="page">${marked.parse(text)}</div>`;
+                        // Clear previous content and display the full page content with XSS protection
+                        const sanitized = DOMPurify.sanitize(marked.parse(text));
+                        contentContainer.innerHTML = `<div class="page">${sanitized}</div>`;
                         // Highlight code blocks using Prism.js after content is loaded
                         highlightCode();
                     })
                     .catch(e => {
                         if (currentView !== intendedView) return; // Abort if view has changed
-                        console.error('Error fetching or parsing page.md:', e);
-                        // Display an error message if content loading fails
-                        contentContainer.innerHTML = `<div class="page"><h2>Error</h2><p>Could not load page content.</p></div>`;
+                        renderError('page', 'Could not load page content.', e);
                     });
             }
-
 
 
             // Event listeners for view selection buttons
