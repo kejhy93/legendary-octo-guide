@@ -259,7 +259,9 @@
                     })
                     .catch(e => {
                         if (currentView !== intendedView) return; // Abort if view has changed
-                        renderError('slideshow', 'Could not load presentation content.', e);
+                        console.error('Error fetching or parsing slide.md:', e);
+                        // Display an error message if content loading fails
+                        contentContainer.innerHTML = `<div class="slide current"><h2>Error</h2><p>Could not load presentation content.</p></div>`;
                     });
             }
 
@@ -284,7 +286,9 @@
                     })
                     .catch(e => {
                         if (currentView !== intendedView) return; // Abort if view has changed
-                        renderError('page', 'Could not load page content.', e);
+                        console.error('Error fetching or parsing page.md:', e);
+                        // Display an error message if content loading fails
+                        contentContainer.innerHTML = `<div class="page"><h2>Error</h2><p>Could not load page content.</p></div>`;
                     });
             }
 
