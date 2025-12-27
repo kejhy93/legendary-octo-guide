@@ -171,11 +171,13 @@
              * Shows the slideshow navigation buttons.
              */
             function loadSlideshow() {
-                setViewMode('slideshow');
+                const intendedView = 'slideshow';
+                setViewMode(intendedView);
                 // Show navigation buttons for slideshow
                 navigationButtons.style.display = 'block';
                 fetchMarkdown('slide.md')
                     .then(text => {
+                        if (currentView !== intendedView) return; // Abort if view has changed
                         // Clear previous content
                         contentContainer.innerHTML = '';
                         // Split the Markdown text into individual slide contents using '---' as a delimiter
@@ -197,6 +199,7 @@
                         Prism.highlightAll();
                     })
                     .catch(e => {
+                        if (currentView !== intendedView) return; // Abort if view has changed
                         console.error('Error fetching or parsing slide.md:', e);
                         // Display an error message if content loading fails
                         contentContainer.innerHTML = `<div class="slide current"><h2>Error</h2><p>Could not load presentation content.</p></div>`;
@@ -208,17 +211,20 @@
              * Hides the slideshow navigation buttons.
              */
             function loadPage() {
-                setViewMode('page');
+                const intendedView = 'page';
+                setViewMode(intendedView);
                 // Hide navigation buttons for page view
                 navigationButtons.style.display = 'none';
                 fetchMarkdown('page.md')
                     .then(text => {
+                        if (currentView !== intendedView) return; // Abort if view has changed
                         // Clear previous content and display the full page content
                         contentContainer.innerHTML = `<div class="page">${marked.parse(text)}</div>`;
                         // Highlight code blocks using Prism.js after content is loaded
                         Prism.highlightAll();
                     })
                     .catch(e => {
+                        if (currentView !== intendedView) return; // Abort if view has changed
                         console.error('Error fetching or parsing page.md:', e);
                         // Display an error message if content loading fails
                         contentContainer.innerHTML = `<div class="page"><h2>Error</h2><p>Could not load page content.</p></div>`;
