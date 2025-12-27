@@ -45,9 +45,7 @@
             // Reference to the container for slideshow navigation buttons
             const navigationButtons = document.querySelector('.navigation');
 
-            // Initialize variables for slide management
-            let slides = []; // Array to hold all slide elements (DOM nodes)
-            let currentSlide = 0; // Index of the currently displayed slide
+            let currentView = 'slideshow'; // 'slideshow' or 'page'
 
             /**
              * Displays a specific slide and manages the state of navigation buttons.
@@ -106,6 +104,7 @@
 
                 // Keyboard navigation for slides
                 document.addEventListener('keydown', (event) => {
+                    if (currentView !== 'slideshow') return; // Only navigate in slideshow mode
                     switch (event.key) {
                         case 'ArrowRight': // Right arrow key for next slide
                             nextSlide();
@@ -147,6 +146,7 @@
              * Shows the slideshow navigation buttons.
              */
             function loadSlideshow() {
+                currentView = 'slideshow';
                 // Show navigation buttons for slideshow
                 navigationButtons.style.display = 'block';
                 fetchMarkdown('slide.md')
@@ -182,6 +182,7 @@
              * Hides the slideshow navigation buttons.
              */
             function loadPage() {
+                currentView = 'page';
                 // Hide navigation buttons for page view
                 navigationButtons.style.display = 'none';
                 fetchMarkdown('page.md')
