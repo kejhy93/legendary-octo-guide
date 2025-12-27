@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Git Cheatsheet</title>
     <!-- Link to the main stylesheet for custom styles -->
+    <!-- Link to the main stylesheet for custom styles -->
     <link rel="stylesheet" href="./style.css">
+    <!-- Link to Prism.js stylesheet for code block syntax highlighting (Okaidia theme) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
+    <!-- Link to marked.js library for converting Markdown to HTML -->
     <!-- Link to Prism.js stylesheet for code block syntax highlighting (Okaidia theme) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
     <!-- Link to marked.js library for converting Markdown to HTML -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
+
 <body>
 
     <!-- Container for buttons to switch between slideshow and page views -->
     <div class="view-navigation" role="group" aria-label="View mode">
-        <button
-            id="slideshow-button"
-            class="view-toggle active"
-            aria-pressed="true"
-        >
+        <button id="slideshow-button" class="view-toggle active" aria-pressed="true">
             Slideshow
         </button>
-        <button
-            id="page-button"
-            class="view-toggle"
-            aria-pressed="false"
-        >
+        <button id="page-button" class="view-toggle" aria-pressed="false">
             Page
         </button>
+    </div>
+
+    <!-- Main container where Markdown content (slides or page) will be rendered -->
+    <div id="content-container"></div>
+
+    <!-- Navigation buttons for the slideshow view -->
+    <!-- Container for buttons to switch between slideshow and page views -->
+    <div class="view-navigation">
+        <button id="slideshow-button">Slideshow</button>
+        <button id="page-button">Page</button>
     </div>
 
     <!-- Main container where Markdown content (slides or page) will be rendered -->
@@ -43,8 +51,9 @@
     <!-- Link to Prism.js core library for syntax highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <!-- Link to Prism.js autoloader plugin for automatic language detection in code blocks -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
     <script>
         // Ensure the DOM is fully loaded before executing JavaScript
         document.addEventListener('DOMContentLoaded', () => {
@@ -52,14 +61,16 @@
             const contentContainer = document.getElementById('content-container');
             const prevButton = document.getElementById('prev');
             const nextButton = document.getElementById('next');
-            const slideshowButton = document.getElementById('slideshow-button');
-            const pageButton = document.getElementById('page-button');
             // Reference to the container for slideshow navigation buttons
             const navigationButtons = document.querySelector('.navigation');
 
-            let slides = [];
-            let currentSlide = 0;
             let currentView = 'slideshow'; // 'slideshow' or 'page'
+            const slideshowButton = document.getElementById('slideshow-button');
+            const pageButton = document.getElementById('page-button');
+
+            // Initialize variables for slide management
+            let slides = []; // Array to hold all slide elements (DOM nodes)
+            let currentSlide = 0; // Index of the currently displayed slide
 
             /**
              * Displays a specific slide and manages the state of navigation buttons.
@@ -93,13 +104,20 @@
             /**
              * Goes back to the previous slide in the slideshow.
              */
+            /**
+             * Goes back to the previous slide in the slideshow.
+             */
             function prevSlide() {
                 if (currentSlide > 0) {
                     currentSlide--;
                     showSlide(currentSlide);
                 }
             }
-            
+
+            /**
+             * Resets the slideshow to the first slide.
+             */
+
             /**
              * Resets the slideshow to the first slide.
              */
@@ -117,15 +135,20 @@
                 prevButton.addEventListener('click', prevSlide);
 
                 // Keyboard navigation for slides
+                // Keyboard navigation for slides
                 document.addEventListener('keydown', (event) => {
                     if (currentView !== 'slideshow') return; // Only navigate in slideshow mode
                     switch (event.key) {
                         case 'ArrowRight': // Right arrow key for next slide
+                        case 'ArrowRight': // Right arrow key for next slide
                             nextSlide();
                             break;
                         case 'ArrowLeft':  // Left arrow key for previous slide
+                        case 'ArrowLeft':  // Left arrow key for previous slide
                             prevSlide();
                             break;
+                        case 'Home':     // Home key to go to the first slide
+                        case 'R':        // 'R' key to go to the first slide
                         case 'Home':     // Home key to go to the first slide
                         case 'R':        // 'R' key to go to the first slide
                         case 'r':
@@ -133,7 +156,9 @@
                             break;
                         default:
                             return; // Do nothing for other keys
+                            return; // Do nothing for other keys
                     }
+                    event.preventDefault(); // Prevent default browser actions for handled keys
                     event.preventDefault(); // Prevent default browser actions for handled keys
                 });
             }
@@ -156,14 +181,14 @@
             }
 
             function setViewMode(mode) {
-              const isSlideshow = mode === 'slideshow';
-              currentView = mode;
+                const isSlideshow = mode === 'slideshow';
+                currentView = mode;
 
-              slideshowButton.setAttribute('aria-pressed', isSlideshow);
-              pageButton.setAttribute('aria-pressed', !isSlideshow);
+                slideshowButton.setAttribute('aria-pressed', isSlideshow);
+                pageButton.setAttribute('aria-pressed', !isSlideshow);
 
-              slideshowButton.classList.toggle('active', isSlideshow);
-              pageButton.classList.toggle('active', !isSlideshow);
+                slideshowButton.classList.toggle('active', isSlideshow);
+                pageButton.classList.toggle('active', !isSlideshow);
             }
 
 
@@ -264,4 +289,5 @@
         });
     </script>
 </body>
+
 </html>
