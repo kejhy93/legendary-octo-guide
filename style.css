@@ -132,6 +132,10 @@ code {
     font-size: 0.9em; /* Smaller font size for view-switching buttons */
 }
 
+.view-toggle.active {
+    background-color: #006400;
+    font-weight: bold;
+}
 
 button {
     background-color: #008000; /* Green background for navigation buttons */

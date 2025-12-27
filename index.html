@@ -14,9 +14,21 @@
 <body>
 
     <!-- Container for buttons to switch between slideshow and page views -->
-    <div class="view-navigation">
-        <button id="slideshow-button">Slideshow</button>
-        <button id="page-button">Page</button>
+    <div class="view-navigation" role="group" aria-label="View mode">
+        <button
+            id="slideshow-button"
+            class="view-toggle active"
+            aria-pressed="true"
+        >
+            Slideshow
+        </button>
+        <button
+            id="page-button"
+            class="view-toggle"
+            aria-pressed="false"
+        >
+            Page
+        </button>
     </div>
 
     <!-- Main container where Markdown content (slides or page) will be rendered -->
@@ -141,12 +153,23 @@
                 });
             }
 
+            function setViewMode(mode) {
+              const isSlideshow = mode === 'slideshow';
+              currentView = mode;
+
+              slideshowButton.setAttribute('aria-pressed', isSlideshow);
+              pageButton.setAttribute('aria-pressed', !isSlideshow);
+
+              slideshowButton.classList.toggle('active', isSlideshow);
+              pageButton.classList.toggle('active', !isSlideshow);
+            }
+
             /**
              * Loads and displays the slideshow content from 'slide.md'.
              * Shows the slideshow navigation buttons.
              */
             function loadSlideshow() {
-                currentView = 'slideshow';
+                setViewMode('slideshow');
                 // Show navigation buttons for slideshow
                 navigationButtons.style.display = 'block';
                 fetchMarkdown('slide.md')
@@ -182,7 +205,7 @@
              * Hides the slideshow navigation buttons.
              */
             function loadPage() {
-                currentView = 'page';
+                setViewMode('page');
                 // Hide navigation buttons for page view
                 navigationButtons.style.display = 'none';
                 fetchMarkdown('page.md')
