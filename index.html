@@ -68,10 +68,6 @@
             const slideshowButton = document.getElementById('slideshow-button');
             const pageButton = document.getElementById('page-button');
 
-            // Initialize variables for slide management
-            let slides = []; // Array to hold all slide elements (DOM nodes)
-            let currentSlide = 0; // Index of the currently displayed slide
-
             /**
              * Displays a specific slide and manages the state of navigation buttons.
              * @param {number} index - The index of the slide to display.
@@ -237,6 +233,7 @@
              * Shows the slideshow navigation buttons.
              */
             function loadSlideshow() {
+                currentView = 'slideshow';
                 const intendedView = 'slideshow';
                 setViewMode(intendedView);
                 // Show navigation buttons for slideshow
