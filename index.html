@@ -34,9 +34,21 @@
 
     <!-- Navigation buttons for the slideshow view -->
     <!-- Container for buttons to switch between slideshow and page views -->
-    <div class="view-navigation">
-        <button id="slideshow-button">Slideshow</button>
-        <button id="page-button">Page</button>
+    <div class="view-navigation" role="group" aria-label="View mode">
+        <button
+            id="slideshow-button"
+            class="view-toggle active"
+            aria-pressed="true"
+        >
+            Slideshow
+        </button>
+        <button
+            id="page-button"
+            class="view-toggle"
+            aria-pressed="false"
+        >
+            Page
+        </button>
     </div>
 
     <!-- Main container where Markdown content (slides or page) will be rendered -->
@@ -155,7 +167,6 @@
                             return; // Do nothing for other keys
                     }
                     event.preventDefault(); // Prevent default browser actions for handled keys
-                    event.preventDefault(); // Prevent default browser actions for handled keys
                 });
             }
 
@@ -209,23 +220,6 @@
                     prevButton.disabled = true;
                     nextButton.disabled = true;
                 }
-            }
-
-            /**
-             * Fetches a markdown file and returns its contents as text.
-             * Centralizes HTTP status checking so all markdown views share the same behavior.
-             *
-             * @param {string} path - The path to the markdown file.
-             * @returns {Promise<string>} - Resolves with the markdown content.
-             */
-            function fetchMarkdown(path) {
-                return fetch(path).then((response) => {
-                    // Check if the HTTP response was successful (status 200-299)
-                    if (!response.ok) {
-                        throw new Error(`Failed to load "${path}" (status ${response.status})`);
-                    }
-                    return response.text();
-                });
             }
 
             /**
