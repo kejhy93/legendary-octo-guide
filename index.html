@@ -57,6 +57,8 @@
             // Reference to the container for slideshow navigation buttons
             const navigationButtons = document.querySelector('.navigation');
 
+            let slides = [];
+            let currentSlide = 0;
             let currentView = 'slideshow'; // 'slideshow' or 'page'
 
             /**
@@ -187,6 +189,7 @@
                         });
                         // Update the 'slides' NodeList and display the first slide
                         slides = document.querySelectorAll('.slide');
+                        currentSlide = 0;
                         if (slides.length > 0) {
                             showSlide(0);
                         }
