@@ -133,6 +133,12 @@ code {
 }
 
 
+.view-navigation button {
+    padding: 8px 15px; /* Smaller padding for view-switching buttons */
+    font-size: 0.9em; /* Smaller font size for view-switching buttons */
+}
+
+
 button {
     background-color: #008000; /* Green background for navigation buttons */
     color: white; /* White text for buttons */
