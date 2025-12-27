@@ -171,8 +171,13 @@
                 Prism.highlightAll();
             }
 
-            function renderError(view, message) {
-                console.error(message);
+
+            function renderError(view, message, error) {
+                if (error) {
+                    console.error(message, error);
+                } else {
+                    console.error(message);
+                }
                 const errorHtml = view === 'slideshow'
                     ? `<div class="slide current"><h2>Error</h2><p>${message}</p></div>`
                     : `<div class="page"><h2>Error</h2><p>${message}</p></div>`;
@@ -219,7 +224,7 @@
                     })
                     .catch(e => {
                         if (currentView !== intendedView) return; // Abort if view has changed
-                        renderError('slideshow', 'Could not load presentation content.');
+                        renderError('slideshow', 'Could not load presentation content.', e);
                     });
             }
 
@@ -242,9 +247,10 @@
                     })
                     .catch(e => {
                         if (currentView !== intendedView) return; // Abort if view has changed
-                        renderError('page', 'Could not load page content.');
+                        renderError('page', 'Could not load page content.', e);
                     });
             }
+
 
 
             // Event listeners for view selection buttons
