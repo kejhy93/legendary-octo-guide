@@ -166,6 +166,25 @@
               pageButton.classList.toggle('active', !isSlideshow);
             }
 
+
+            function highlightCode() {
+                Prism.highlightAll();
+            }
+
+            function renderError(view, message) {
+                console.error(message);
+                const errorHtml = view === 'slideshow'
+                    ? `<div class="slide current"><h2>Error</h2><p>${message}</p></div>`
+                    : `<div class="page"><h2>Error</h2><p>${message}</p></div>`;
+                contentContainer.innerHTML = errorHtml;
+                if (view === 'slideshow') {
+                    slides = [];
+                    currentSlide = 0;
+                    prevButton.disabled = true;
+                    nextButton.disabled = true;
+                }
+            }
+
             /**
              * Loads and displays the slideshow content from 'slide.md'.
              * Shows the slideshow navigation buttons.
@@ -196,17 +215,11 @@
                             showSlide(0);
                         }
                         // Highlight code blocks using Prism.js after content is loaded
-                        Prism.highlightAll();
+                        highlightCode();
                     })
                     .catch(e => {
                         if (currentView !== intendedView) return; // Abort if view has changed
-                        console.error('Error fetching or parsing slide.md:', e);
-                        // Display an error message if content loading fails
-                        contentContainer.innerHTML = `<div class="slide current"><h2>Error</h2><p>Could not load presentation content.</p></div>`;
-                        slides = [];
-                        currentSlide = 0;
-                        prevButton.disabled = true;
-                        nextButton.disabled = true;
+                        renderError('slideshow', 'Could not load presentation content.');
                     });
             }
 
@@ -225,15 +238,14 @@
                         // Clear previous content and display the full page content
                         contentContainer.innerHTML = `<div class="page">${marked.parse(text)}</div>`;
                         // Highlight code blocks using Prism.js after content is loaded
-                        Prism.highlightAll();
+                        highlightCode();
                     })
                     .catch(e => {
                         if (currentView !== intendedView) return; // Abort if view has changed
-                        console.error('Error fetching or parsing page.md:', e);
-                        // Display an error message if content loading fails
-                        contentContainer.innerHTML = `<div class="page"><h2>Error</h2><p>Could not load page content.</p></div>`;
+                        renderError('page', 'Could not load page content.');
                     });
             }
+
 
             // Event listeners for view selection buttons
             slideshowButton.addEventListener('click', loadSlideshow);
