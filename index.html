@@ -202,7 +202,11 @@
                         if (currentView !== intendedView) return; // Abort if view has changed
                         console.error('Error fetching or parsing slide.md:', e);
                         // Display an error message if content loading fails
-                        contentContainer.innerHTML = `<div class="slide current"><h2>Error</h2><p>Could not load presentation content.</p></div>`;
+                        contentContainer.innerHTML = `<div class="current"><h2>Error</h2><p>Could not load presentation content.</p></div>`;
+                        slides = [];
+                        currentSlide = 0;
+                        prevButton.disabled = true;
+                        nextButton.disabled = true;
                     });
             }
 
