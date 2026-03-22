@@ -94,9 +94,6 @@
             /**
              * Goes back to the previous slide in the slideshow.
              */
-            /**
-             * Goes back to the previous slide in the slideshow.
-             */
             function prevSlide() {
                 if (currentSlide > 0) {
                     currentSlide--;
@@ -160,6 +157,7 @@
              * @returns {Promise<string>} - Resolves with the markdown content.
              */
             function fetchMarkdown(path) {
+                log(`Fetching markdown from "${path}"...`);
                 return fetch(path).then((response) => {
                     // Check if the HTTP response was successful (status 200-299)
                     if (!response.ok) {
@@ -184,12 +182,9 @@
                 shortcutsInfoEl.classList.toggle('active', isSlideshow && shortcutsVisible);
             }
 
-
             function highlightCode() {
                 Prism.highlightAll();
             }
-
-
 
             function renderError(view, message, error) {
                 if (error) {
@@ -223,7 +218,6 @@
                     nextButton.disabled = true;
                 }
             }
-
 
             /**
              * Loads and displays the slideshow content from 'slide.md'.
@@ -289,7 +283,6 @@
                     });
             }
 
-
             // Event listeners for view selection buttons
             slideshowButton.addEventListener('click', loadSlideshow);
             pageButton.addEventListener('click', loadPage);
@@ -301,5 +294,4 @@
         });
     </script>
 </body>
-
 </html>
