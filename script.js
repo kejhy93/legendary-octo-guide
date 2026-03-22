@@ -155,7 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Clear existing content
-        contentContainer.innerHTML = '';
+        while (contentContainer.firstChild) {
+            contentContainer.removeChild(contentContainer.firstChild);
+        }
 
         // Create wrapper depending on view type
         const wrapper = document.createElement('div');
@@ -203,12 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Convert Markdown content to HTML and sanitize to prevent XSS
                     const sanitized = sanitizeMarkdown(content);
                     // Use setHTML() which is designed for safely setting HTML content
-                    if (slide.setHTML) {
-                        slide.setHTML(sanitized);
-                    } else {
-                        // Fallback for browsers that don't support setHTML
-                        slide.innerHTML = sanitized;
-                    }
+                    slide.setHTML(sanitized);
                     contentContainer.appendChild(slide); // Add slide to the container
                 });
                 // Update the 'slides' NodeList and display the first slide (scoped to the content container)
@@ -240,16 +237,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentView !== intendedView) return; // Abort if view has changed
                 // Clear previous content and display the full page content with XSS protection
                 const sanitized = sanitizeMarkdown(text);
-                contentContainer.innerHTML = '';
+                while (contentContainer.firstChild) {
+                    contentContainer.removeChild(contentContainer.firstChild);
+                }
                 const pageDiv = document.createElement('div');
                 pageDiv.className = 'page';
                 // Use setHTML() which is designed for safely setting HTML content
-                if (pageDiv.setHTML) {
-                    pageDiv.setHTML(sanitized);
-                } else {
-                    // Fallback for browsers that don't support setHTML
-                    pageDiv.innerHTML = sanitized;
-                }
+                pageDiv.setHTML(sanitized);
                 contentContainer.appendChild(pageDiv);
                 // Highlight code blocks using Prism.js after content is loaded
                 highlightCode();
