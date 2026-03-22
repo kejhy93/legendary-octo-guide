@@ -117,6 +117,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /**
+     * Sanitizes HTML to prevent XSS attacks.
+     * Converts markdown to HTML and sanitizes the result using DOMPurify.
+     *
+     * @param {string} markdownText - The Markdown text to convert and sanitize.
+     * @returns {string} - Sanitized HTML string safe to insert into the DOM.
+     */
+    function sanitizeMarkdown(markdownText) {
+        const htmlContent = marked.parse(markdownText);
+        return DOMPurify.sanitize(htmlContent);
+    }
+
     function setViewMode(mode) {
         const isSlideshow = mode === 'slideshow';
         currentView = mode;
@@ -188,9 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 slideContents.forEach(content => {
                     const slide = document.createElement('div');
                     slide.className = 'slide'; // Assign 'slide' class for styling
-                    // Convert Markdown content to HTML and sanitize with DOMPurify to prevent XSS
-                    const sanitized = DOMPurify.sanitize(marked.parse(content));
-                    slide.innerHTML = sanitized;
+                    // Convert Markdown content to HTML and sanitize to prevent XSS
+                    slide.innerHTML = sanitizeMarkdown(content);
                     contentContainer.appendChild(slide); // Add slide to the container
                 });
                 // Update the 'slides' NodeList and display the first slide (scoped to the content container)
@@ -221,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(text => {
                 if (currentView !== intendedView) return; // Abort if view has changed
                 // Clear previous content and display the full page content with XSS protection
-                const sanitized = DOMPurify.sanitize(marked.parse(text));
+                const sanitized = sanitizeMarkdown(text);
                 contentContainer.innerHTML = `<div class="page">${sanitized}</div>`;
                 // Highlight code blocks using Prism.js after content is loaded
                 highlightCode();
