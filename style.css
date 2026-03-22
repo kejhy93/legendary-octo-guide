@@ -1,10 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap'); /* Import Google Font for consistent typography */
 
+/* --- CSS Custom Properties (Color Palette) --- */
+:root {
+    --color-primary-green: #00ff00;
+    --color-bright-green: #66ff66;
+    --color-dark-bg: #1a1a1a;
+    --color-card-bg: #2b2b2b;
+    --color-dark-code: #0d0d0d;
+    --color-header-green: #008000;
+    --color-header-dark-green: #006400;
+    --color-light-grey: #e0e0e0;
+    --color-border-grey: #444;
+    --color-disabled-grey: #888;
+    --color-disabled-bg-grey: #444;
+    --color-row-alternate: #3a3a3a;
+}
+
 /* --- General Body Styling (Dark Theme Base) --- */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #1a1a1a; /* Dark background for the entire page */
-    color: #00ff00; /* Primary green text color for the body */
+    background-color: var(--color-dark-bg); /* Dark background for the entire page */
+    color: var(--color-primary-green); /* Primary green text color for the body */
     margin: 0;
     padding: 0;
     display: flex; /* Use flexbox for centering content */
@@ -12,6 +28,19 @@ body {
     align-items: center; /* Center content vertically */
     min-height: 100vh; /* Ensure body takes full viewport height */
     overflow: auto; /* Allow scrolling if content overflows viewport */
+}
+
+#content-container {
+    width: 90%;
+    max-width: 900px;
+}
+
+.page {
+    background-color: var(--color-card-bg);
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 6px 6px rgba(0,0,0,0.3);
+    padding: 40px;
+    box-sizing: border-box;
 }
 
 #content-container {
@@ -29,7 +58,7 @@ body {
 
 /* --- Individual Slide Styling --- */
 .slide {
-    background-color: #2b2b2b; /* Slightly lighter dark background for individual slides */
+    background-color: var(--color-card-bg); /* Slightly lighter dark background for individual slides */
     border-radius: 10px; /* Rounded corners for slides */
     box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 6px 6px rgba(0,0,0,0.3); /* Soft shadow for depth */
     padding: 40px; /* Internal spacing within each slide */
@@ -45,15 +74,15 @@ body {
 /* --- Heading Styles --- */
 h1 {
     font-size: 3em; /* Larger font size for main title */
-    color: #66ff66; /* Vibrant green for primary headings */
+    color: var(--color-bright-green); /* Vibrant green for primary headings */
     text-align: center; /* Center align main title */
     margin-top: 0;
 }
 
 h2 {
     font-size: 2em; /* Font size for subheadings */
-    color: #00ff00; /* Green for subheadings */
-    border-bottom: 2px solid #66ff66; /* Green underline for subheadings */
+    color: var(--color-primary-green); /* Green for subheadings */
+    border-bottom: 2px solid var(--color-bright-green); /* Green underline for subheadings */
     padding-bottom: 10px; /* Space between text and underline */
     margin-bottom: 20px; /* Space below subheadings */
 }
@@ -63,7 +92,7 @@ p,
 li {
     font-size: 1.2em; /* Base font size for paragraphs and list items */
     line-height: 1.6; /* Improved line spacing for readability */
-    color: #e0e0e0; /* Light grey for general text to ensure readability on dark background */
+    color: var(--color-light-grey); /* Light grey for general text to ensure readability on dark background */
 }
 
 ul {
@@ -82,23 +111,23 @@ th,
 td {
     padding: 15px; /* Internal spacing within table cells */
     text-align: left; /* Left align text in table cells */
-    border-bottom: 1px solid #444; /* Darker border for table rows */
-    color: #e0e0e0; /* Light grey text for table content */
+    border-bottom: 1px solid var(--color-border-grey); /* Darker border for table rows */
+    color: var(--color-light-grey); /* Light grey text for table content */
 }
 
 th {
-    background-color: #008000; /* Darker green background for table headers */
+    background-color: var(--color-header-green); /* Darker green background for table headers */
     color: white; /* White text for table headers for contrast */
 }
 
 tr:nth-child(even) {
-    background-color: #3a3a3a; /* Alternate row background for better readability */
+    background-color: var(--color-row-alternate); /* Alternate row background for better readability */
 }
 
 /* --- Code Block Styles --- */
 pre {
-    background-color: #0d0d0d; /* Very dark background for code blocks */
-    color: #00ff00; /* Green text for code */
+    background-color: var(--color-dark-code); /* Very dark background for code blocks */
+    color: var(--color-primary-green); /* Green text for code */
     padding: 20px; /* Internal spacing in code blocks */
     border-radius: 5px; /* Rounded corners for code blocks */
     overflow-x: auto; /* Allow horizontal scrolling for long code lines */
@@ -126,19 +155,18 @@ code {
     z-index: 100;
 }
 
-
 .view-navigation button {
     padding: 8px 15px; /* Smaller padding for view-switching buttons */
     font-size: 0.9em; /* Smaller font size for view-switching buttons */
 }
 
 .view-toggle.active {
-    background-color: #006400;
+    background-color: var(--color-header-dark-green);
     font-weight: bold;
 }
 
 button {
-    background-color: #008000; /* Green background for navigation buttons */
+    background-color: var(--color-header-green); /* Green background for navigation buttons */
     color: white; /* White text for buttons */
     border: none; /* No border */
     padding: 15px 30px; /* Padding for button size */
@@ -150,15 +178,128 @@ button {
 }
 
 button:disabled {
-    background-color: #444; /* Darker grey for disabled buttons */
-    color: #888; /* Lighter grey text for disabled buttons */
+    background-color: var(--color-disabled-bg-grey); /* Darker grey for disabled buttons */
+    color: var(--color-disabled-grey); /* Lighter grey text for disabled buttons */
     cursor: not-allowed; /* Indicate non-clickable element */
 }
 
 button:hover:not(:disabled) {
-    background-color: #006400; /* Slightly darker green on hover for enabled buttons */
+    background-color: var(--color-header-dark-green); /* Slightly darker green on hover for enabled buttons */
 }
 
 .hidden {
     display: none;
+}
+
+/* --- Slide Counter Styling --- */
+.slide-counter {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    background-color: var(--color-header-green);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    z-index: 100;
+    display: none;
+}
+
+.slide-counter.active {
+    display: block;
+}
+
+/* --- Keyboard Shortcuts Info --- */
+.shortcuts-info {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: var(--color-light-grey);
+    padding: 15px 20px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    z-index: 99;
+    display: none;
+    max-width: 90%;
+    border: 1px solid var(--color-header-green);
+}
+
+.shortcuts-info.active {
+    display: block;
+}
+
+/* --- Responsive Design - Mobile --- */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8em;
+    }
+
+    h2 {
+        font-size: 1.3em;
+    }
+
+    p, li {
+        font-size: 1em;
+    }
+
+    .slide, .page {
+        padding: 20px;
+    }
+
+    button {
+        padding: 10px 15px;
+        font-size: 0.85em;
+        margin: 0 5px;
+    }
+
+    .view-navigation button {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+
+    .navigation {
+        bottom: 15px;
+    }
+
+    .shortcuts-info {
+        bottom: 100px;
+        padding: 12px 15px;
+        font-size: 0.75em;
+    }
+
+    .slide-counter {
+        top: 20px;
+        right: 20px;
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.4em;
+    }
+
+    h2 {
+        font-size: 1.1em;
+    }
+
+    p, li {
+        font-size: 0.9em;
+    }
+
+    .slide, .page {
+        padding: 15px;
+    }
+
+    button {
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+
+    #content-container {
+        width: 95%;
+    }
 }
