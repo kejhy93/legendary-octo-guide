@@ -175,7 +175,10 @@
             }
 
             function highlightCode() {
-                Prism.highlightAll();
+                // Scope Prism highlighting to the dynamic content container
+                if (window.Prism && contentContainer) {
+                    Prism.highlightAllUnder(contentContainer);
+                }
             }
 
             function renderError(view, message, error) {
