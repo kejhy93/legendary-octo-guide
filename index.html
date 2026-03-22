@@ -56,6 +56,8 @@
             let slides = [];
             let currentSlide = 0;
             let currentView = 'slideshow'; // 'slideshow' or 'page'
+            const slideshowButton = document.getElementById('slideshow-button');
+            const pageButton = document.getElementById('page-button');
             const slideCounterEl = document.getElementById('slide-counter');
             const shortcutsInfoEl = document.getElementById('shortcuts-info');
             let shortcutsVisible = true;
@@ -142,7 +144,6 @@
                             shortcutsInfoEl.classList.toggle('active', shortcutsVisible);
                             break;
                         default:
-                            return; // Do nothing for other keys
                             return; // Do nothing for other keys
                     }
                     event.preventDefault(); // Prevent default browser actions for handled keys
