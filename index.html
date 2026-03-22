@@ -58,8 +58,6 @@
             let currentView = 'slideshow'; // 'slideshow' or 'page'
             const slideshowButton = document.getElementById('slideshow-button');
             const pageButton = document.getElementById('page-button');
-            const slideCounterEl = document.getElementById('slide-counter');
-            const shortcutsInfoEl = document.getElementById('shortcuts-info');
             let shortcutsVisible = true;
 
             /**
@@ -79,8 +77,6 @@
                 prevButton.disabled = index === 0;
                 // Disable 'Next' button if on the last slide
                 nextButton.disabled = index === slides.length - 1;
-                // Update slide counter
-                slideCounterEl.textContent = `Slide ${index + 1}/${slides.length}`;
             }
 
             /**
@@ -177,10 +173,6 @@
 
                 slideshowButton.classList.toggle('active', isSlideshow);
                 pageButton.classList.toggle('active', !isSlideshow);
-
-                // Show/hide slide counter and shortcuts based on view mode
-                slideCounterEl.classList.toggle('active', isSlideshow);
-                shortcutsInfoEl.classList.toggle('active', isSlideshow && shortcutsVisible);
             }
 
             function highlightCode() {
