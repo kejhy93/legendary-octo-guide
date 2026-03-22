@@ -201,7 +201,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const slide = document.createElement('div');
                     slide.className = 'slide'; // Assign 'slide' class for styling
                     // Convert Markdown content to HTML and sanitize to prevent XSS
-                    slide.innerHTML = sanitizeMarkdown(content);
+                    const sanitized = sanitizeMarkdown(content);
+                    // Use setHTML() which is designed for safely setting HTML content
+                    if (slide.setHTML) {
+                        slide.setHTML(sanitized);
+                    } else {
+                        // Fallback for browsers that don't support setHTML
+                        slide.innerHTML = sanitized;
+                    }
                     contentContainer.appendChild(slide); // Add slide to the container
                 });
                 // Update the 'slides' NodeList and display the first slide (scoped to the content container)
@@ -233,7 +240,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentView !== intendedView) return; // Abort if view has changed
                 // Clear previous content and display the full page content with XSS protection
                 const sanitized = sanitizeMarkdown(text);
-                contentContainer.innerHTML = `<div class="page">${sanitized}</div>`;
+                contentContainer.innerHTML = '';
+                const pageDiv = document.createElement('div');
+                pageDiv.className = 'page';
+                // Use setHTML() which is designed for safely setting HTML content
+                if (pageDiv.setHTML) {
+                    pageDiv.setHTML(sanitized);
+                } else {
+                    // Fallback for browsers that don't support setHTML
+                    pageDiv.innerHTML = sanitized;
+                }
+                contentContainer.appendChild(pageDiv);
                 // Highlight code blocks using Prism.js after content is loaded
                 highlightCode();
             })
